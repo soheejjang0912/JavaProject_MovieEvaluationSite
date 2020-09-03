@@ -48,17 +48,17 @@
 							회원관리
 						</a>
 						<div class="dropdown-menu" aria-labelledby="dropdown">
-							<a class="dropdown-item" href="#">로그인</a>
-							<a class="dropdown-item" href="#">회원가입</a>
-							<a class="dropdown-item" href="#">로그아웃</a>
+							<a class="dropdown-item" href="userLogin.jsp">로그인</a>
+							<a class="dropdown-item" href="userJoin.jsp">회원가입</a>
+							<a class="dropdown-item" href="userLogout.jsp">로그아웃</a>
 						</div>
 					</li>	
 				</ul>
 				
-				<from class = "form-inline my-2 my-lg-0"> <%-- 검색창 만들기 --%>
+				<form class = "form-inline my-2 my-lg-0"> <%-- 검색창 만들기 --%>
 					<input class="form-control mr-sm2" type="search" placeholder="내용을 입력하세요." aria-label="Search">
 					<button class="btn btn-outline-success my-2 my-sm-0" type = "submit">검색</button>
-				</from>
+				</form>
 				
 			</div>
 		</nav>
@@ -112,7 +112,76 @@
 					
 					</div>		
 				</div>
-			</div>		
+			</div>	
+			
+			
+			
+			<!-- 카드 강의평가를 등록해씅ㄹ떄 어떻게 출력이 될지  -->
+			<div class="card bg-light mt-3"><!-- 위쪽으로 3 여백 -->
+				<div class="card-header bg-light">
+					<div class="row">
+						<div class="col-8 text-left">영화제목&nbsp;<small>감독이름</small></div>
+						<div class="col-4 text-right">종합 <span style="color: red;">A</span></div>
+					</div>
+				</div>
+			
+			
+				<div class="card-body">
+					<h5 class="card-title">
+						킬링타임용&nbsp;<small>(분기)</small>
+					</h5>
+					<p class="cart-text">앞부분은 좀 지루했지만 뒤로 갈 수록 좋아짐</p>
+					<div class="row">
+						<div class="col-9 text-left">
+							스토리<span style="color : red;">A</span>
+							영상미<span style="color : red;">A</span>
+							연기<span style="color : red;">A</span>
+							<span style="color: grenn;">(추천:15)</span>
+						</div>
+						
+						<div class="col-3 text-right">
+							<a onclick="return confirm('추천하시겠습니까?')" href="./likeAction.jsp?evaluationID=">추천</a>
+							<a onclick="return confirm('삭제하시겠습니까?')" href="./deleteAction.jsp?evaluationID=">삭제</a>
+						
+						</div>
+					
+					</div>		
+				</div>
+			</div>	
+			
+			<!-- 카드 강의평가를 등록해씅ㄹ떄 어떻게 출력이 될지  -->
+			<div class="card bg-light mt-3"><!-- 위쪽으로 3 여백 -->
+				<div class="card-header bg-light">
+					<div class="row">
+						<div class="col-8 text-left">영화제목&nbsp;<small>감독이름</small></div>
+						<div class="col-4 text-right">종합 <span style="color: red;">A</span></div>
+					</div>
+				</div>
+			
+			
+				<div class="card-body">
+					<h5 class="card-title">
+						별로&nbsp;<small>(분기)</small>
+					</h5>
+					<p class="cart-text">앞부분은 좀 지루했지만 뒤로 갈 수록 좋아짐</p>
+					<div class="row">
+						<div class="col-9 text-left">
+							스토리<span style="color : red;">A</span>
+							영상미<span style="color : red;">A</span>
+							연기<span style="color : red;">A</span>
+							<span style="color: grenn;">(추천:15)</span>
+						</div>
+						
+						<div class="col-3 text-right">
+							<a onclick="return confirm('추천하시겠습니까?')" href="./likeAction.jsp?evaluationID=">추천</a>
+							<a onclick="return confirm('삭제하시겠습니까?')" href="./deleteAction.jsp?evaluationID=">삭제</a>
+						
+						</div>
+					
+					</div>		
+				</div>
+			</div>	
+				
 		</section>
 		
 	
@@ -183,7 +252,7 @@
 							
 							<div class="form-group">
 								<label>제목</label>
-								<input type="text" name="evaluationTime" class="form-control" maxlength="30">
+								<input type="text" name="evaluationTitle" class="form-control" maxlength="30">
 							</div>
 							<div class="form-group">
 								<label>내용</label>
@@ -283,6 +352,10 @@
 				</div>
 			</div>
 		</div>
+		
+		<footer class="bg-dark mt-4 p-5 text-center" style="color: #FFFFFF;"><!-- 웹사이트를 개발자가 회사의 정보 출력 -->
+			Copyright &copy; SOHEEJJANG0912 All Rights Reserved.
+		</footer>
 		
 		<!-- 제이쿼리 자바스크립트 추가하기  -->
 		<script src="./js/jquery.min.js"></script>
