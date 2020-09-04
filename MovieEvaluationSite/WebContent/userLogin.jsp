@@ -47,7 +47,7 @@
 		}
 
 	%>
-		<%-- nav : 메뉴바 네비게이션 바 --%>
+				<%-- nav : 메뉴바 네비게이션 바 --%>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<a class="navbar-brand" href="index.jsp">주말엔 명화</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
@@ -89,11 +89,9 @@
 			</div>
 		</nav>
 		
-		
-		
 <%-- 본문 section --%>
 		<section class="container mt-4" style="max-width: 560px;"> <%--컨테이너는 반응형으로 특정한 요소가 알아서 작아지는데 도움을 줌--%>
-				<form method="post" action="./userRegisterAction.jsp">
+				<form method="post" action="./userLoginAction.jsp">
 					<div class="form-group">
 						<label>아이디</label>
 						<input type="text" name="userID" class="form-control">
@@ -102,15 +100,16 @@
 						<label>비밀번호</label>	
 						<input type="password" name="userPassword" class="form-control">
 					</div>
-					<div class="form-group">
-						<label>이메일</label>	
-						<input type="email" name="userEmail" class="form-control">
-					</div>
-					<button type="submit" class="btn btn-primary">회원가입</button>
+					<button type="submit" class="btn btn-primary">로그인</button>
 				</form>
 		</section>
 		
-
+		
+		
+		
+		
+		
+	
 <%-- 본문 section --%>	
 		
 		

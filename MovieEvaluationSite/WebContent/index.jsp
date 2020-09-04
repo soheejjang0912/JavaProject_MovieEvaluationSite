@@ -1,6 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="user.UserDAO" %>
 <%--
     웹 디자인! 프레임 워크를 이용하여 개발한다! 
     1.부트스트랩 : 대표적인 css 프로그램 (CSS,JS - WebContent)
@@ -30,6 +30,31 @@
 	
 	
 	<body>
+
+	<%
+		String userID = null;
+		if(session.getAttribute("userID") != null){
+			userID = (String)session.getAttribute("userID");
+		}
+		if(userID == null){
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('로그인을 해주세요.');");
+			script.println("location.href = 'userLogin.jsp';");
+			script.println("</script>");
+			script.close();
+			return; 
+		}
+		boolean emailChecked = new UserDAO().getUserEmailChecked(userID);
+		if (emailChecked == false){
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("location.href = 'emailSendConfirm.jsp';");
+			script.println("</script>");
+			script.close();
+			return; 
+		}
+	%>
 		<%-- nav : 메뉴바 네비게이션 바 --%>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<a class="navbar-brand" href="index.jsp">주말엔 명화</a>
@@ -48,9 +73,18 @@
 							회원관리
 						</a>
 						<div class="dropdown-menu" aria-labelledby="dropdown">
+<%
+	if(userID == null) {
+%>						
 							<a class="dropdown-item" href="userLogin.jsp">로그인</a>
 							<a class="dropdown-item" href="userJoin.jsp">회원가입</a>
+<%
+	}else{
+%>							
 							<a class="dropdown-item" href="userLogout.jsp">로그아웃</a>
+<%
+	}
+%>			
 						</div>
 					</li>	
 				</ul>
