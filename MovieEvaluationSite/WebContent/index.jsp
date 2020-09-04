@@ -236,11 +236,11 @@
 							<div class="form-row"> <%-- 하나의 행을 여러개로 나눌 때 --%>
 								<div class="form-group col-sm-6"> <%-- 일반적으로 하나의 행은 16열 --%>
 									<label>영화 이름</label>
-									<input type="text" name="movieNmae" class="form-control" maxlengh="20">
+									<input type="text" name="movieName" class="form-control" maxlengh="20">
 								</div>
 								<div class="form-group col-sm-6">
 									<label>감독명</label>
-									<input type="text" name="directorNmae" class="form-control" maxlengh="20">
+									<input type="text" name="directorName" class="form-control" maxlengh="20">
 								</div>
 							</div>
 							
