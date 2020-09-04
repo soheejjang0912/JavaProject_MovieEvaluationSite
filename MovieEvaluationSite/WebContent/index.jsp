@@ -364,7 +364,6 @@
 					
 					<div class = "modal-body">
 						<form action="./reportAction.jsp" method ="post">
-						|
 							<div class="form-group">
 								<label>신고 제목</label>
 								<input type="text" name="reportTitle" class="form-control" maxlength="30">
