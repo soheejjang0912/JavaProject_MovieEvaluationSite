@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="user.UserDAO" %>
+<%@ page import="evaluation.EvaluationDTO" %>
+<%@ page import="evaluation.EvaluationDAO" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.net.URLEncoder" %>
 <%--
     웹 디자인! 프레임 워크를 이용하여 개발한다! 
     1.부트스트랩 : 대표적인 css 프로그램 (CSS,JS - WebContent)
@@ -10,7 +14,6 @@
     2.jQuery : 부트스트랩 사용하기 위한 라이브러리가 필요한데 그 중 하나(WebContent-js)
     3.custom.css : 프레임워크의 기본정의를 바꾸고 싶을 때   
 --%>
-
 <!doctype html>
 
 <html>
@@ -32,6 +35,30 @@
 	<body>
 
 	<%
+		//검색엔진
+		request.setCharacterEncoding("UTF-8");
+		String movieDivide = "전체";
+		String searchType = "최신순";
+		String search = "";
+		int pageNumber = 0;
+		
+		if(request.getParameter("movieDivide") != null){
+			movieDivide = request.getParameter("movieDivide");
+		}
+		if(request.getParameter("searchType") != null){
+			searchType = request.getParameter("searchType");
+		}
+		if(request.getParameter("search") != null){
+			search = request.getParameter("search");
+		}
+		if(request.getParameter("pageNumber") != null){
+			try{
+				pageNumber = Integer.parseInt(request.getParameter("pageNumber")); 
+			}catch(Exception e){
+				System.out.println("검색 페이지 번호 오류");
+			}
+		}
+		
 		String userID = null;
 		if(session.getAttribute("userID") != null){
 			userID = (String)session.getAttribute("userID");
@@ -89,8 +116,9 @@
 					</li>	
 				</ul>
 				
-				<form class = "form-inline my-2 my-lg-0"> <%-- 검색창 만들기 --%>
-					<input class="form-control mr-sm2" type="search" placeholder="내용을 입력하세요." aria-label="Search">
+				<!-- 미니 검색 엔진 -->
+				<form action="./index.jsp" method ="get" class = "form-inline my-2 my-lg-0"> <%-- 검색창 만들기 --%>
+					<input type="text" name="search" class="form-control mr-sm2" type="search" placeholder="내용을 입력하세요." aria-label="Search">
 					<button class="btn btn-outline-success my-2 my-sm-0" type = "submit">검색</button>
 				</form>
 				
@@ -103,10 +131,16 @@
 			<form method="get" action="./index.jsp" class="form-inline mt-3">
 				<select name ="movieDivide" class="form-control mx-1 mt-2">
 					<option value="전체">전체</option>
-					<option value="한국영화">한국영화</option>
-					<option value="외국영화">외국영화</option>
-					<option value="기타">기타</option>
+					<option value="한국영화" <% if(movieDivide.equals("한국영화")) out.println("selected"); %>>한국영화</option>
+					<option value="외국영화" <% if(movieDivide.equals("외국영화")) out.println("selected"); %>>외국영화</option>
+					<option value="기타" <% if(movieDivide.equals("기타")) out.println("selected"); %>>기타</option>
 				</select>
+				
+				<select name ="searchType" class="form-control mx-1 mt-2">
+					<option value="최신순">최신순</option>
+					<option value="추천순" <% if(searchType.equals("추천순")) out.println("selected"); %>>추천순</option>
+				</select>
+				
 				<%-- 사용자 검색 가능하게 --%>
 				<input type ="text" name = "search" class="form-control mx-1 mt-2" placeholder="내용을 입력하세요." >
 				<button type="submit" class="btn btn-primary mx-1 mt-2">검색</button>
@@ -114,28 +148,37 @@
 				<a class="btn btn-danger mx-1 mt-2" data-toggle="modal" href="#reportModal">신고</a>
 			</form>
 		
+<%
+	ArrayList<EvaluationDTO> evaluationList = new ArrayList<EvaluationDTO>();
+	evaluationList = new EvaluationDAO().getList(movieDivide, searchType, search, pageNumber);
+	if(evaluationList != null){
+		for(int i = 0; i< evaluationList.size(); i++){ //다음페이지로 넘어가기 위해서 6까지 가져옴
+			if(i==5) break;
+			EvaluationDTO evaluation = evaluationList.get(i);
+	
+%>
 			
 			<!-- 카드 강의평가를 등록해씅ㄹ떄 어떻게 출력이 될지  -->
 			<div class="card bg-light mt-3"><!-- 위쪽으로 3 여백 -->
 				<div class="card-header bg-light">
 					<div class="row">
-						<div class="col-8 text-left">영화제목&nbsp;<small>감독이름</small></div>
-						<div class="col-4 text-right">종합 <span style="color: red;">A</span></div>
+						<div class="col-8 text-left"><%= evaluation.getMovieName() %>&nbsp;<small><%= evaluation.getDirectorName() %></small></div>
+						<div class="col-4 text-right">종합 <span style="color: red;"><%= evaluation.getTotalScore() %></span></div>
 					</div>
 				</div>
 			
 			
 				<div class="card-body">
 					<h5 class="card-title">
-						정말 좋은 영화.&nbsp;<small>(분기)</small>
+						<%= evaluation.getEvaluationTitle() %>&nbsp;<small><%= evaluation.getMovieDivide() %></small>
 					</h5>
-					<p class="cart-text">앞부분은 좀 지루했지만 뒤로 갈 수록 좋아짐</p>
+					<p class="cart-text"><%= evaluation.getEvaluationContent() %></p>
 					<div class="row">
 						<div class="col-9 text-left">
-							스토리<span style="color : red;">A</span>
-							영상미<span style="color : red;">A</span>
-							연기<span style="color : red;">A</span>
-							<span style="color: grenn;">(추천:15)</span>
+							스토리<span style="color : red;"><%= evaluation.getStoryScore()%></span>
+							영상미<span style="color : red;"><%= evaluation.getVisualScore()%></span>
+							연기<span style="color : red;"><%= evaluation.getActingScore()%></span>
+							<span style="color: green;">(추천:<%= evaluation.getLikeCount()%>)</span>
 						</div>
 						
 						<div class="col-3 text-right">
@@ -147,77 +190,48 @@
 					</div>		
 				</div>
 			</div>	
-			
-			
-			
-			<!-- 카드 강의평가를 등록해씅ㄹ떄 어떻게 출력이 될지  -->
-			<div class="card bg-light mt-3"><!-- 위쪽으로 3 여백 -->
-				<div class="card-header bg-light">
-					<div class="row">
-						<div class="col-8 text-left">영화제목&nbsp;<small>감독이름</small></div>
-						<div class="col-4 text-right">종합 <span style="color: red;">A</span></div>
-					</div>
-				</div>
-			
-			
-				<div class="card-body">
-					<h5 class="card-title">
-						킬링타임용&nbsp;<small>(분기)</small>
-					</h5>
-					<p class="cart-text">앞부분은 좀 지루했지만 뒤로 갈 수록 좋아짐</p>
-					<div class="row">
-						<div class="col-9 text-left">
-							스토리<span style="color : red;">A</span>
-							영상미<span style="color : red;">A</span>
-							연기<span style="color : red;">A</span>
-							<span style="color: grenn;">(추천:15)</span>
-						</div>
-						
-						<div class="col-3 text-right">
-							<a onclick="return confirm('추천하시겠습니까?')" href="./likeAction.jsp?evaluationID=">추천</a>
-							<a onclick="return confirm('삭제하시겠습니까?')" href="./deleteAction.jsp?evaluationID=">삭제</a>
-						
-						</div>
-					
-					</div>		
-				</div>
-			</div>	
-			
-			<!-- 카드 강의평가를 등록해씅ㄹ떄 어떻게 출력이 될지  -->
-			<div class="card bg-light mt-3"><!-- 위쪽으로 3 여백 -->
-				<div class="card-header bg-light">
-					<div class="row">
-						<div class="col-8 text-left">영화제목&nbsp;<small>감독이름</small></div>
-						<div class="col-4 text-right">종합 <span style="color: red;">A</span></div>
-					</div>
-				</div>
-			
-			
-				<div class="card-body">
-					<h5 class="card-title">
-						별로&nbsp;<small>(분기)</small>
-					</h5>
-					<p class="cart-text">앞부분은 좀 지루했지만 뒤로 갈 수록 좋아짐</p>
-					<div class="row">
-						<div class="col-9 text-left">
-							스토리<span style="color : red;">A</span>
-							영상미<span style="color : red;">A</span>
-							연기<span style="color : red;">A</span>
-							<span style="color: grenn;">(추천:15)</span>
-						</div>
-						
-						<div class="col-3 text-right">
-							<a onclick="return confirm('추천하시겠습니까?')" href="./likeAction.jsp?evaluationID=">추천</a>
-							<a onclick="return confirm('삭제하시겠습니까?')" href="./deleteAction.jsp?evaluationID=">삭제</a>
-						
-						</div>
-					
-					</div>		
-				</div>
-			</div>	
-				
+<%
+		}
+	}
+%>
 		</section>
 		
+		<!-- 페이지 처리 -->
+		<ul class="pagination justify-content-center mt-3">
+			<li class="page-item">		
+<%
+	if(pageNumber <= 0){
+%>
+	<a class="page-link disabled">이전</a>
+<%
+	}else{
+%>
+	<a class="page-link" href="./index.jsp?lectureDivide=<%= URLEncoder.encode(movieDivide, "UTF-8") %>
+	&searchType=<%= URLEncoder.encode(searchType, "UTF-8") %>&search=<%= URLEncoder.encode(search, "UTF-8")%>
+	&pageNunber=<%= pageNumber - 1 %>">이전</a>
+<%
+	}
+%> 
+			</li>
+	 		
+	 		<li>
+<%
+	if(evaluationList.size() < 6){
+%>
+	<a class="page-link disabled">다음</a>
+<%
+	}else{
+%>
+	<a class="page-link" href="./index.jsp?lectureDivide=<%= URLEncoder.encode(movieDivide, "UTF-8") %>
+	&searchType=<%= URLEncoder.encode(searchType, "UTF-8") %>&search=<%= URLEncoder.encode(search, "UTF-8")%>
+	&pageNunber=<%= pageNumber + 1 %>">다음</a>
+<%
+	}
+%> 
+	 		
+	 		</li>
+		
+		</ul>
 	
 		
 		<!-- 등록하기 버튼을 눌렀을 때 모달정의하기 -->
@@ -275,11 +289,9 @@
 								<div class="form-group col-sm-4">
 									<label>영화 장르</label>
 									<select name="movieDivide" class="form-control">
-										<option value="코미디" selected>코미디</option>
-										<option value="로맨스">로맨스</option>
-										<option value="추리">추리</option>
-										<option value="공포">공포</option>
-										<option value="가타">기타</option>
+										<option value="한국영화" selected>한국영화</option>
+										<option value="외국영화">외국영화</option>
+										<option value="기타">기타</option>
 									</select>
 								</div> 
 							</div>
